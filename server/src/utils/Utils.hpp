@@ -1,9 +1,7 @@
 //
 // Created by helh on 11.04.2026.
 //
-
-#ifndef OMONIC_ARM_LOCATOR_SERVER_UTILS_HPP
-#define OMONIC_ARM_LOCATOR_SERVER_UTILS_HPP
+#pragma once
 
 #include "drogon/HttpResponse.h"
 
@@ -21,5 +19,3 @@ inline drogon::HttpResponsePtr make404Page() {
     return makeJson("error", "not found");
 }
 }
-
-#endif //OMONIC_ARM_LOCATOR_SERVER_UTILS_HPP

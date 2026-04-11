@@ -4,57 +4,70 @@
 
 #include "Database.hpp"
 
-#include <stdexcept>
+Database::Database(QString host, QString database, QString user, QString password) {
+    db = QSqlDatabase::addDatabase("QMYSQL");
 
-Database::Database(std::string_view path) noexcept(false) : db(nullptr) {
-    if (sqlite3_open(path.data(), &db) != SQLITE_OK)
-        throw std::runtime_error(sqlite3_errmsg(db));
+    db.setHostName(host);
+    db.setDatabaseName(database);
+    db.setUserName(user);
+    db.setPassword(password);
 
-    const char *sql = R"(
-CREATE TABLE IF NOT EXISTS device_logs (
-    UID TEXT PRIMARY KEY,
-    Date INTEGER NOT NULL,
-    IP TEXT,
-    HostName TEXT,
-    Subdivision TEXT,
-    Domain TEXT,
-    Workgroup TEXT
-);)";
+    if (!db.open()) {
+        throw std::runtime_error(db.lastError().text().toStdString());
+    }
 
-    exec(sql);
 }
 
 Database::~Database() {
-    sqlite3_close(db);
+    db.close();
 }
 
-Database::Database(Database &&other) noexcept {
-        db = other.db;
-        other.db = nullptr;
-}
+void Database::tryCreateDB() {
+    auto q = query();
+    QString createTableSQL = R"(
+        CREATE TABLE IF NOT EXISTS `arm-locator-logs` (
+            `UID` VARCHAR(255) PRIMARY KEY,
+            `DatePing` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            `IP` TEXT NOT NULL,
+            `HostName` TEXT NOT NULL,
+            `SubDivision` TEXT NOT NULL,
+            `Domain` TEXT NOT NULL,
+            `WorkGroup` TEXT NOT NULL
+        ))";
 
-Database & Database::operator=(Database &&other) noexcept {
-    if (this != &other) {
-        db = other.db;
-        other.db = nullptr;
+
+    if (!q.exec(createTableSQL)) {
+        throw std::runtime_error(db.lastError().text().toStdString());
     }
-
-    return *this;
 }
 
-void Database::exec(std::string_view query, std::function<void(sqlite3_stmt *)> callback_bind) const noexcept(false) {
-    sqlite3_stmt *res;
+void Database::tryInsertLogsToDB(QString UID, QString IP, QString HostName, QString SubDivision, QString Domain, QString Workgroup) {
+    QString sql = R"(
+        INSERT INTO `arm-locator-logs` (UID, IP, HostName, Subdivision, Domain, Workgroup)
+        VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            IP = VALUES(IP),
+            HostName = VALUES(HostName),
+            Subdivision = VALUES(Subdivision),
+            Domain = VALUES(Domain),
+            Workgroup = VALUES(Workgroup)
+        )";
 
+    auto q = query();
+    q.prepare(sql);
 
-    int rc = sqlite3_prepare_v2(db, query.data(), -1, &res, nullptr);
-    if (rc != SQLITE_OK)
-        throw std::runtime_error(sqlite3_errmsg(db));
+    q.bindValue(0, UID);
+    q.bindValue(1, IP);
+    q.bindValue(2, HostName);
+    q.bindValue(3, SubDivision);
+    q.bindValue(4, Domain);
+    q.bindValue(5, Workgroup);
 
+    if (!q.exec()) {
+        throw std::runtime_error(db.lastError().text().toStdString());
+    }
+}
 
-    if (callback_bind)
-        callback_bind(res);
-
-    int step = sqlite3_step(res);
-
-    sqlite3_finalize(res);
+QSqlQuery Database::query() {
+    return QSqlQuery(db);
 }

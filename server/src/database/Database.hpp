@@ -2,31 +2,23 @@
 // Created by helh on 11.04.2026.
 //
 
-#ifndef OMONIC_ARM_LOCATOR_SERVER_DATABASE_HPP
-#define OMONIC_ARM_LOCATOR_SERVER_DATABASE_HPP
+#pragma once
 
-#include <sqlite3.h>
-#include <functional>
-#include <memory>
-#include <string>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+
 
 class Database {
 public:
-    explicit Database(std::string_view path) noexcept(false);
+    Database(QString host, QString database, QString user, QString password);
     ~Database();
 
-    Database(const Database &other) = delete;
-    Database & operator=(const Database &other) = delete;
+    void tryCreateDB();
+    void tryInsertLogsToDB(QString UID, QString IP, QString HostName, QString SubDivision, QString Domain, QString Workgroup);
 
-    Database(Database &&other) noexcept;
-    Database & operator=(Database &&other) noexcept;
-
-    void exec(std::string_view query, std::function<void(sqlite3_stmt *)> callback_bind=nullptr) const noexcept(false);
+    QSqlQuery query();
 
 private:
-    sqlite3 *db;
+    QSqlDatabase db;
 };
-
-inline std::shared_ptr<Database> db;
-
-#endif //OMONIC_ARM_LOCATOR_SERVER_DATABASE_HPP

@@ -2,8 +2,7 @@
 // Created by helh on 11.04.2026.
 //
 
-#ifndef OMONIC_ARM_LOCATOR_SERVER_SERVER_HPP
-#define OMONIC_ARM_LOCATOR_SERVER_SERVER_HPP
+#pragma once
 
 #include "drogon/HttpController.h"
 
@@ -15,5 +14,3 @@ public:
 
     void ping(const drogon::HttpRequestPtr &req, std::function<void (const drogon::HttpResponsePtr &)> &&callback);
 };
-
-#endif //OMONIC_ARM_LOCATOR_SERVER_SERVER_HPP

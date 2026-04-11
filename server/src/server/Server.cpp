@@ -4,7 +4,7 @@
 
 #include "Server.hpp"
 
-#include "database/Database.hpp"
+#include "database/SqlLite3Database.hpp"
 #include "utils/Utils.hpp"
 
 void Server::ping(const drogon::HttpRequestPtr &req, std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
@@ -27,10 +27,9 @@ void Server::ping(const drogon::HttpRequestPtr &req, std::function<void(const dr
 
     const char *sql =
 R"(
-INSERT INTO device_logs (UID, Date, IP, HostName, Subdivision, Domain, Workgroup)
-VALUES (?, ?, ?, ?, ?, ?, ?)
+INSERT INTO device_logs (UID, IP, HostName, Subdivision, Domain, Workgroup)
+VALUES (?, ?, ?, ?, ?, ?)
 ON CONFLICT(UID) DO UPDATE SET
-    Date = excluded.Date,
     IP = excluded.IP,
     HostName = excluded.HostName,
     Subdivision = excluded.Subdivision,

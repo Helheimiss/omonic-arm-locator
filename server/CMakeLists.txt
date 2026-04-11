@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_SHARED_LIBS OFF)
 
 
-find_package(SQLite3 REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Sql)
 
 add_subdirectory(libs/drogon)
 set(BUILD_CTL OFF)
@@ -23,5 +23,5 @@ add_executable(${PROJECT_NAME}
         src/server/Server.cpp
         src/database/Database.cpp
 )
-target_link_libraries(${PROJECT_NAME} PRIVATE drogon ${SQLite3_LIBRARIES})
-target_include_directories(${PROJECT_NAME} PRIVATE src ${SQLite3_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE drogon Qt6::Sql)
+target_include_directories(${PROJECT_NAME} PRIVATE src)
