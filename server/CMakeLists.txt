@@ -15,6 +15,9 @@ set(BUILD_YAML_CONFIG OFF)
 
 
 add_executable(${PROJECT_NAME}
-    src/main.cpp
+        src/main.cpp
+
+        src/server/Server.cpp
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE drogon)
+target_include_directories(${PROJECT_NAME} PRIVATE src)

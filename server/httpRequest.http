@@ -1,0 +1,12 @@
+### POST request to ping
+POST http://127.0.0.1:8080/Server/ping
+Content-Type: application/json
+
+{
+  "IP": "192.168.0.1",
+  "HostName": "Барсик-ПК",
+  "Subdivision": "Дом",
+  "Domain": "ee",
+  "Workgroup": "workspace"
+}
+###
