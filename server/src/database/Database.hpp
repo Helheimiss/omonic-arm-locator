@@ -7,6 +7,7 @@
 
 #include <sqlite3.h>
 #include <functional>
+#include <memory>
 #include <string>
 
 class Database {
@@ -26,6 +27,6 @@ private:
     sqlite3 *db;
 };
 
-inline Database db("test.db");
+inline std::shared_ptr<Database> db;
 
 #endif //OMONIC_ARM_LOCATOR_SERVER_DATABASE_HPP

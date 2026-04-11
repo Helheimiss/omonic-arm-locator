@@ -12,9 +12,8 @@ Database::Database(std::string_view path) noexcept(false) : db(nullptr) {
 
     const char *sql = R"(
 CREATE TABLE IF NOT EXISTS device_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    UID TEXT NOT NULL,
-    Date INTEGER NOT NULL,  -- Unix timestamp (time_t)
+    UID TEXT PRIMARY KEY,
+    Date INTEGER NOT NULL,
     IP TEXT,
     HostName TEXT,
     Subdivision TEXT,
