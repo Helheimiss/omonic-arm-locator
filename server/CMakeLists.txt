@@ -19,9 +19,7 @@ set(BUILD_YAML_CONFIG OFF)
 
 add_executable(${PROJECT_NAME}
         src/main.cpp
-
-        src/server/Server.cpp
-        src/database/Database.cpp
+        src/armDB/ArmDB.cpp
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE drogon Qt6::Sql)
 target_include_directories(${PROJECT_NAME} PRIVATE src)
