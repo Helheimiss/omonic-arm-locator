@@ -1,5 +1,5 @@
 ### POST request to ping
-POST http://127.0.0.1:8080/Server/ping
+POST http://127.0.0.1:8080/server/ping
 Content-Type: application/json
 
 {

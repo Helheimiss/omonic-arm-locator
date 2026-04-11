@@ -7,7 +7,7 @@
 using namespace std::string_literals;
 
 namespace armDB {
-ArmDB::ArmDB(QString type, QString HostName, QString DatabaseName, QString UserName, QString Password, int port) {
+ArmDB::ArmDB(QString type, QString HostName, QString DatabaseName, QString UserName, QString Password, int port) : type(type) {
     db = QSqlDatabase::addDatabase(type, "my_connection");
 
     db.setHostName(HostName);
@@ -22,7 +22,7 @@ ArmDB::ArmDB(QString type, QString HostName, QString DatabaseName, QString UserN
 
 }
 
-ArmDB::ArmDB(QSqlDatabase db) {
+ArmDB::ArmDB(QSqlDatabase db) : type(db.driverName()) {
     this->db = db;
 
     if (!this->db.open()) {
@@ -36,5 +36,66 @@ ArmDB::~ArmDB() {
 
 QSqlQuery ArmDB::getQuery() {
     return QSqlQuery(db);
+}
+
+void ArmDB::tryCreateTable() {
+    auto query = getQuery();
+
+    if (type == "QMARIADB") {
+        QString sql = R"(
+        CREATE TABLE IF NOT EXISTS `arm-locator-logs` (
+          `UID` varchar(255) PRIMARY KEY,
+          `DatePing` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+          `IP` text NOT NULL,
+          `HostName` text NOT NULL,
+          `SubDivision` text NOT NULL,
+          `Domain` text NOT NULL,
+          `WorkGroup` text NOT NULL
+        ))";
+
+        if (!query.prepare(sql)) {
+            throw std::runtime_error("Prepare failed: " + query.lastError().text().toStdString());
+        }
+    }
+    else {
+        throw std::runtime_error("bad type DB");
+    }
+
+
+    if (!query.exec()) {
+        throw std::runtime_error("Exec failed: " + query.lastError().text().toStdString());
+    }
+}
+
+void ArmDB::tryInsertLogsToDB(QString UID, QString IP, QString HostName, QString SubDivision, QString Domain, QString Workgroup) {
+    QString sql = R"(
+    INSERT INTO `arm-locator-logs`
+        (UID, IP, HostName, Subdivision, Domain, Workgroup) -- Убрали DatePing отсюда
+    VALUES (?, ?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+        IP = VALUES(IP),
+        DatePing = CURRENT_TIMESTAMP(), -- Явно обновляем время сервера
+        HostName = VALUES(HostName),
+        Subdivision = VALUES(Subdivision),
+        Domain = VALUES(Domain),
+        Workgroup = VALUES(Workgroup);
+)";
+
+    auto query = getQuery();
+
+    if (!query.prepare(sql)) {
+        throw std::runtime_error("Prepare failed: " + query.lastError().text().toStdString());
+    }
+
+    query.bindValue(0, UID);
+    query.bindValue(1, IP);
+    query.bindValue(2, HostName);
+    query.bindValue(3, SubDivision);
+    query.bindValue(4, Domain);
+    query.bindValue(5, Workgroup);
+
+    if (!query.exec()) {
+        throw std::runtime_error("Exec failed: " + query.lastError().text().toStdString());
+    }
 }
 } // armDB
