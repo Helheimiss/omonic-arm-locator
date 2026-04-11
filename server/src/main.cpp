@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]) {
 
-    db = std::make_shared<Database>("db_name");
+    db = std::make_shared<Database>("device_logs.db");
 
     drogon::app()
         .addListener("127.0.0.1",8080)
