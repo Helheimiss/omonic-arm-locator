@@ -5,6 +5,7 @@ project(omonic-arm-locator-server)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(SQLite3 REQUIRED)
 
 add_subdirectory(libs/drogon)
 set(BUILD_CTL OFF)
@@ -18,6 +19,7 @@ add_executable(${PROJECT_NAME}
         src/main.cpp
 
         src/server/Server.cpp
+        src/database/Database.cpp
 )
-target_link_libraries(${PROJECT_NAME} PRIVATE drogon)
-target_include_directories(${PROJECT_NAME} PRIVATE src)
+target_link_libraries(${PROJECT_NAME} PRIVATE drogon ${SQLite3_LIBRARIES})
+target_include_directories(${PROJECT_NAME} PRIVATE src ${SQLite3_INCLUDE_DIRS})
