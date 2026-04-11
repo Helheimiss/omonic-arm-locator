@@ -21,7 +21,7 @@ public:
     Database(Database &&other) noexcept;
     Database & operator=(Database &&other) noexcept;
 
-    void exec(std::string_view query, std::function<void(sqlite3_stmt *)> callback_bind=nullptr) noexcept(false);
+    void exec(std::string_view query, std::function<void(sqlite3_stmt *)> callback_bind=nullptr) const noexcept(false);
 
 private:
     sqlite3 *db;

@@ -16,6 +16,4 @@ public:
     void ping(const drogon::HttpRequestPtr &req, std::function<void (const drogon::HttpResponsePtr &)> &&callback);
 };
 
-
-
 #endif //OMONIC_ARM_LOCATOR_SERVER_SERVER_HPP

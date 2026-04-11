@@ -38,18 +38,16 @@ ON CONFLICT(UID) DO UPDATE SET
     Workgroup = excluded.Workgroup;)";
 
 
-    // save();
     db->exec(sql, [&](auto stmt) {
         sqlite3_bind_text(stmt, 1, UID.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_int64(stmt, 2, Date);
+        sqlite3_bind_int64(stmt, 2, static_cast<sqlite3_int64>(Date));
         sqlite3_bind_text(stmt, 3, IP.c_str(), -1, SQLITE_STATIC);
         sqlite3_bind_text(stmt, 4, HostName.c_str(), -1, SQLITE_STATIC);
         sqlite3_bind_text(stmt, 5, Subdivision.c_str(), -1, SQLITE_STATIC);
         sqlite3_bind_text(stmt, 6, Domain.c_str(), -1, SQLITE_STATIC);
-
+        sqlite3_bind_text(stmt, 7, Workgroup.c_str(), -1, SQLITE_STATIC);
     });
 
 
     callback(Utils::makeJson("error", "no error", drogon::HttpStatusCode::k200OK));
-    // callback(drogon::HttpResponse::newHttpJsonResponse(*requestBody));
 }

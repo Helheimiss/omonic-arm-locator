@@ -42,13 +42,14 @@ Database & Database::operator=(Database &&other) noexcept {
     return *this;
 }
 
-void Database::exec(std::string_view query, std::function<void(sqlite3_stmt *)> callback_bind) noexcept(false) {
+void Database::exec(std::string_view query, std::function<void(sqlite3_stmt *)> callback_bind) const noexcept(false) {
     sqlite3_stmt *res;
 
 
     int rc = sqlite3_prepare_v2(db, query.data(), -1, &res, nullptr);
     if (rc != SQLITE_OK)
         throw std::runtime_error(sqlite3_errmsg(db));
+
 
     if (callback_bind)
         callback_bind(res);
