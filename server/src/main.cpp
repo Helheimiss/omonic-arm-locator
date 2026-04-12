@@ -26,6 +26,7 @@ void loadConfig() {
     auto DatabaseName = root.get("DatabaseName", "").asString();
     auto UserName = root.get("UserName", "").asString();
     auto Password  = root.get("Password", "").asString();
+    auto ConnectOptions = root.get("ConnectOptions", "").asString();
     auto Port  = root.get("Port", "3306").asInt();
 
     armDB::DB = std::make_unique<armDB::ArmDB>
@@ -35,6 +36,7 @@ void loadConfig() {
         QString::fromStdString(DatabaseName),
         QString::fromStdString(UserName),
         QString::fromStdString(Password),
+        QString::fromStdString(ConnectOptions),
         Port
     );
 }

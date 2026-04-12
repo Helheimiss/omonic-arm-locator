@@ -7,11 +7,13 @@
 using namespace std::string_literals;
 
 namespace armDB {
-ArmDB::ArmDB(const QString &type, const QString &HostName, const QString &DatabaseName, const QString &UserName, const QString &Password, int port) : type(type) {
+ArmDB::ArmDB(const QString &type, const QString &HostName, const QString &DatabaseName, const QString &UserName, const QString &Password, const QString &connectOptions, int port) : type(type) {
     db = QSqlDatabase::addDatabase(type);
 
     db.setHostName(HostName);
     db.setDatabaseName(DatabaseName);
+
+    db.setConnectOptions(connectOptions);
     db.setUserName(UserName);
     db.setPassword(Password);
     db.setPort(port);

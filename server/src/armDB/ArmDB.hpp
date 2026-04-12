@@ -11,7 +11,7 @@
 namespace armDB {
 class ArmDB {
 public:
-    ArmDB(const QString &type, const QString &HostName, const QString &DatabaseName, const QString &UserName, const QString &Password, int port = 3306);
+    ArmDB(const QString &type, const QString &HostName, const QString &DatabaseName, const QString &UserName, const QString &Password, const QString &connectOptions = QString(), int port = 3306);
     ~ArmDB();
 
     ArmDB(const ArmDB &other) = delete;

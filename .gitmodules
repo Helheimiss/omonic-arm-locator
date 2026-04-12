@@ -1,3 +1,9 @@
 [submodule "server/libs/drogon"]
 	path = server/libs/drogon
 	url = https://github.com/drogonframework/drogon.git
+[submodule "client/libs/jsoncpp"]
+	path = client/libs/jsoncpp
+	url = https://github.com/open-source-parsers/jsoncpp.git
+[submodule "client/libs/cpp-httplib"]
+	path = client/libs/cpp-httplib
+	url = https://github.com/yhirose/cpp-httplib.git
