@@ -53,6 +53,7 @@ int main(int argc, char *argv[]) {
     drogon::app()
         .loadConfigFile("./configs/server.json")
         .registerHandler("/server/ping", &server::pingIndexHandler, {drogon::Post})
+        .registerHandler("/server/check", &server::checkHandler)
         .run();
 
     return app.exec();

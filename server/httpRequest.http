@@ -4,7 +4,6 @@ Content-Type: application/json
 
 {
   "UID": "8aacc426020340929fa62fadfd841333",
-  "IP": "192.168.0.1",
   "HostName": "Барсик-ПК",
   "Subdivision": "Дом",
   "Domain": "ee",

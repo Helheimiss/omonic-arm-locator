@@ -18,13 +18,19 @@ namespace server {
 
 
         auto UID = QString::fromStdString(requestBody->get("UID", "NULL").asString());
-        auto IP = QString::fromStdString(requestBody->get("IP", "NULL").asString());
+        auto IP = QString::fromStdString(request->getPeerAddr().toIp());
         auto HostName = QString::fromStdString(requestBody->get("HostName", "NULL").asString());
         auto Subdivision = QString::fromStdString(requestBody->get("Subdivision", "NULL").asString());
         auto Domain = QString::fromStdString(requestBody->get("Domain", "NULL").asString());
         auto Workgroup = QString::fromStdString(requestBody->get("Workgroup", "NULL").asString());
 
         armDB::DB->tryInsertLogsToDB(UID, IP, HostName, Subdivision, Domain, Workgroup);
+
+        callback(makeSimpleJsonResponse("error", "no errors"));
+    }
+
+    void checkHandler(const drogon::HttpRequestPtr &request, Callback &&callback) {
+
 
         callback(makeSimpleJsonResponse("error", "no errors"));
     }
