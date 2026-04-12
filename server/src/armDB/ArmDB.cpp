@@ -31,10 +31,12 @@ QSqlQuery ArmDB::getQuery() {
 }
 
 void ArmDB::tryCreateTable() {
+    // TODO()
     auto query = getQuery();
+    QString sql;
 
     if (type == "QMARIADB") {
-        QString sql = R"(
+        sql = R"(
         CREATE TABLE IF NOT EXISTS `arm-locator-logs` (
           `UID` varchar(255) PRIMARY KEY,
           `DatePing` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -44,22 +46,22 @@ void ArmDB::tryCreateTable() {
           `Domain` text NOT NULL,
           `WorkGroup` text NOT NULL
         ))";
-
-        if (!query.prepare(sql)) {
-            throw std::runtime_error("Prepare failed: " + query.lastError().text().toStdString());
-        }
     }
     else {
         throw std::runtime_error("bad type DB");
     }
 
+    if (!query.prepare(sql)) {
+        throw std::runtime_error("Prepare failed: " + query.lastError().text().toStdString());
+    }
 
     if (!query.exec()) {
         throw std::runtime_error("Exec failed: " + query.lastError().text().toStdString());
     }
 }
 
-void ArmDB::tryInsertLogsToDB(QString UID, QString IP, QString HostName, QString SubDivision, QString Domain, QString Workgroup) {
+void ArmDB::tryInsertLogsToDB(const QString &UID, const QString &IP, const QString &HostName, const QString &SubDivision, const QString &Domain, const QString &Workgroup) {
+    // TODO()
     QString sql = R"(
     INSERT INTO `arm-locator-logs` (UID, IP, HostName, Subdivision, Domain, Workgroup)
     VALUES (?, ?, ?, ?, ?, ?)
@@ -70,7 +72,7 @@ void ArmDB::tryInsertLogsToDB(QString UID, QString IP, QString HostName, QString
         Subdivision = VALUES(Subdivision),
         Domain = VALUES(Domain),
         Workgroup = VALUES(Workgroup);
-)";
+    )";
 
     auto query = getQuery();
 

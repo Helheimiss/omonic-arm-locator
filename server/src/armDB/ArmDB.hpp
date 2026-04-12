@@ -22,7 +22,7 @@ public:
 
     QSqlQuery getQuery();
     void tryCreateTable();
-    void tryInsertLogsToDB(QString UID, QString IP, QString HostName, QString SubDivision, QString Domain, QString Workgroup);
+    void tryInsertLogsToDB(const QString &UID, const QString &IP, const QString &HostName, const QString &SubDivision, const QString &Domain, const QString &Workgroup);
 
 private:
     QString type;
