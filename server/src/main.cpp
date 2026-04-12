@@ -8,18 +8,48 @@
 #include "drogon/HttpAppFramework.h"
 #include "server/Server.hpp"
 
+#include <fstream>
+
+void loadConfig() {
+    using namespace std::string_literals;
+    std::ifstream file("./configs/database.json");
+    Json::Value root;
+    Json::CharReaderBuilder builder;
+    std::string errs;
+
+    if (!Json::parseFromStream(builder, file, &root, &errs)) {
+        throw std::runtime_error("Error parsing JSON: "s + errs);
+    }
+
+    auto Type = root.get("Type", "").asString();
+    auto HostName = root.get("HostName", "").asString();
+    auto DatabaseName = root.get("DatabaseName", "").asString();
+    auto UserName = root.get("UserName", "").asString();
+    auto Password  = root.get("Password", "").asString();
+    auto Port  = root.get("Port", "3306").asInt();
+
+    armDB::DB = std::make_unique<armDB::ArmDB>
+    (
+        QString::fromStdString(Type),
+        QString::fromStdString(HostName),
+        QString::fromStdString(DatabaseName),
+        QString::fromStdString(UserName),
+        QString::fromStdString(Password),
+        Port
+    );
+}
+
+
 int main(int argc, char *argv[]) {
     QCoreApplication app(argc, argv);
 
-    armDB::DB = std::make_unique<armDB::ArmDB>
 
-
+    loadConfig();
     armDB::DB->tryCreateTable();
 
+
     drogon::app()
-        .addListener("127.0.0.1",8080)
-        .enableServerHeader(false)
-        // .setCustom404Page(Utils::make404Page())
+        .loadConfigFile("./configs/server.json")
         .registerHandler("/server/ping", &server::pingIndexHandler, {drogon::Post})
         .run();
 

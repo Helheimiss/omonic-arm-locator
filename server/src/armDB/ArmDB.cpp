@@ -7,8 +7,8 @@
 using namespace std::string_literals;
 
 namespace armDB {
-ArmDB::ArmDB(QString type, QString HostName, QString DatabaseName, QString UserName, QString Password, int port) : type(type) {
-    db = QSqlDatabase::addDatabase(type, "my_connection");
+ArmDB::ArmDB(const QString &type, const QString &HostName, const QString &DatabaseName, const QString &UserName, const QString &Password, int port) : type(type) {
+    db = QSqlDatabase::addDatabase(type);
 
     db.setHostName(HostName);
     db.setDatabaseName(DatabaseName);
@@ -20,14 +20,6 @@ ArmDB::ArmDB(QString type, QString HostName, QString DatabaseName, QString UserN
         throw std::runtime_error("Could not connect to database "s + db.lastError().text().toStdString());
     }
 
-}
-
-ArmDB::ArmDB(QSqlDatabase db) : type(db.driverName()) {
-    this->db = db;
-
-    if (!this->db.open()) {
-        throw std::runtime_error("Could not connect to database "s + db.lastError().text().toStdString());
-    }
 }
 
 ArmDB::~ArmDB() {
@@ -69,12 +61,11 @@ void ArmDB::tryCreateTable() {
 
 void ArmDB::tryInsertLogsToDB(QString UID, QString IP, QString HostName, QString SubDivision, QString Domain, QString Workgroup) {
     QString sql = R"(
-    INSERT INTO `arm-locator-logs`
-        (UID, IP, HostName, Subdivision, Domain, Workgroup) -- Убрали DatePing отсюда
+    INSERT INTO `arm-locator-logs` (UID, IP, HostName, Subdivision, Domain, Workgroup)
     VALUES (?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
         IP = VALUES(IP),
-        DatePing = CURRENT_TIMESTAMP(), -- Явно обновляем время сервера
+        DatePing = CURRENT_TIMESTAMP(),
         HostName = VALUES(HostName),
         Subdivision = VALUES(Subdivision),
         Domain = VALUES(Domain),

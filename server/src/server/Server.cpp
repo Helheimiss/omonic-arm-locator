@@ -17,12 +17,12 @@ namespace server {
         }
 
 
-        auto UID = QString::fromStdString(requestBody->get("UID", "").asString());
-        auto IP = QString::fromStdString(requestBody->get("IP", "").asString());
-        auto HostName = QString::fromStdString(requestBody->get("HostName", "").asString());
-        auto Subdivision = QString::fromStdString(requestBody->get("Subdivision", "").asString());
-        auto Domain = QString::fromStdString(requestBody->get("Domain", "").asString());
-        auto Workgroup = QString::fromStdString(requestBody->get("Workgroup", "").asString());
+        auto UID = QString::fromStdString(requestBody->get("UID", "NULL").asString());
+        auto IP = QString::fromStdString(requestBody->get("IP", "NULL").asString());
+        auto HostName = QString::fromStdString(requestBody->get("HostName", "NULL").asString());
+        auto Subdivision = QString::fromStdString(requestBody->get("Subdivision", "NULL").asString());
+        auto Domain = QString::fromStdString(requestBody->get("Domain", "NULL").asString());
+        auto Workgroup = QString::fromStdString(requestBody->get("Workgroup", "NULL").asString());
 
         armDB::DB->tryInsertLogsToDB(UID, IP, HostName, Subdivision, Domain, Workgroup);
 

@@ -11,18 +11,14 @@
 namespace armDB {
 class ArmDB {
 public:
-    ArmDB(QString type, QString HostName, QString DatabaseName, QString UserName, QString Password, int port = 3306);
-    // ArmDB(QString type, QString HostName, QString DatabaseName, int port);
-    // ArmDB(QString type, QString HostName, QString DatabaseName);
-    ArmDB(QSqlDatabase db);
+    ArmDB(const QString &type, const QString &HostName, const QString &DatabaseName, const QString &UserName, const QString &Password, int port = 3306);
     ~ArmDB();
 
     ArmDB(const ArmDB &other) = delete;
     ArmDB & operator=(const ArmDB &other) = delete;
 
-    // TODO()
-    // ArmDB(ArmDB &&other) noexcept;
-    // ArmDB & operator=(ArmDB &&other) noexcept;
+    ArmDB(ArmDB &&other) = delete;
+    ArmDB & operator=(ArmDB &&other) = delete;
 
     QSqlQuery getQuery();
     void tryCreateTable();
@@ -31,6 +27,7 @@ public:
 private:
     QString type;
     QSqlDatabase db;
+    QString user_name_;
 };
 
 inline std::unique_ptr<ArmDB> DB;

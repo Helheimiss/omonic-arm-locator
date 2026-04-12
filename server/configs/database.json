@@ -1,0 +1,8 @@
+{
+  "Type": "QMARIADB",
+  "HostName": "db.example.com",
+  "DatabaseName": "Logs",
+  "UserName": "user",
+  "Password": "password",
+  "Port": 3306
+}
