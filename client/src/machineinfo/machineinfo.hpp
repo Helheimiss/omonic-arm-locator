@@ -58,7 +58,7 @@ inline MachineInfo get_machine_info() {
 
     // Workgroup
     size = sizeof(buf);
-    if (GetComputerNameExA(ComputerNameWorkgroup, buf, &size))
+    if (GetComputerNameExA(static_cast<COMPUTER_NAME_FORMAT>(5), buf, &size))
         info.workgroup = buf;
 
     // UID (MachineGuid из реестра)

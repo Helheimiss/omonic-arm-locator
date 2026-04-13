@@ -13,6 +13,7 @@
   "DatabaseName": "Logs",
   "UserName": "user",
   "Password": "password",
+  "ConnectOptions": "MYSQL_OPT_RECONNECT=1",
   "Port": 3306
 }
 ```
