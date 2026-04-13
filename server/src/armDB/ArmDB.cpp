@@ -39,7 +39,7 @@ void ArmDB::tryCreateTable() {
 
     if (type == "QMARIADB") {
         sql = R"(
-        CREATE TABLE IF NOT EXISTS `arm-locator-logs` (
+        CREATE TABLE IF NOT EXISTS `omn_arm_locator_logs` (
           `UID` varchar(255) PRIMARY KEY,
           `DatePing` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
           `IP` text NOT NULL,
@@ -65,7 +65,7 @@ void ArmDB::tryCreateTable() {
 void ArmDB::tryInsertLogsToDB(const QString &UID, const QString &IP, const QString &HostName, const QString &SubDivision, const QString &Domain, const QString &Workgroup) {
     // TODO()
     QString sql = R"(
-    INSERT INTO `arm-locator-logs` (UID, IP, HostName, Subdivision, Domain, Workgroup)
+    INSERT INTO `omn_arm_locator_logs` (UID, IP, HostName, Subdivision, Domain, Workgroup)
     VALUES (?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
         IP = VALUES(IP),

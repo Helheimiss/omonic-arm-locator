@@ -21,12 +21,17 @@ Pinger(std::string host, std::string subdivision, int awaitInMin) : host(host), 
 void doWork() {
     auto res = client->Get("/server/check");
 
+    std::cout << "client check server" << std::endl;
     if (!res) {
         auto err = res.error();
         std::cerr << httplib::to_string(err) << " " << host << std::endl;
 
     }
-    else if (res->status != 200) {
+    else if (res->status == 200) {
+        std::cout << "server: ok" << std::endl;
+        std::cout << "client: ok" << std::endl;
+    }
+    else {
         std::cerr << res->status << std::endl;
     }
 
@@ -38,9 +43,12 @@ void doWork() {
         if (!res) {
             auto err = res.error();
             std::cerr << httplib::to_string(err) << " " << host << std::endl;
+            std::cout << "client ping" << std::endl;
+            std::cout << "server: ok" << std::endl;
         }
         else if (res->status != 200) {
-            std::cerr << res->status << std::endl;
+            std::cout << "server: bad" << std::endl;
+            std::cerr << "status: " + res->status << std::endl;
         }
     }
 }
