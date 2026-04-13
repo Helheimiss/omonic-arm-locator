@@ -17,7 +17,13 @@
   "Port": 3306
 }
 ```
+```json
+{
+  "Connection String": "QMARIADB"
+}
+```
 
 # Task list
 - [x] QMARIADB
 - [ ] QSQLITE
+- [ ] Connection String

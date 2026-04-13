@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 4.1)
 project(omonic-arm-locator-client)
 
 if (WIN32)
+    set(CMAKE_PREFIX_PATH "C:/msys64/mingw64;${CMAKE_PREFIX_PATH}"})
     add_compile_definitions(WINVER=0x0A00 _WIN32_WINNT=0x0A00)
 endif ()
 
