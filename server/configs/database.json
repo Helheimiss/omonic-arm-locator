@@ -4,6 +4,6 @@
   "DatabaseName": "Logs",
   "UserName": "user",
   "Password": "password",
-  "ConnectOptions": "MYSQL_OPT_RECONNECT=1",
+  "ConnectOptions": "MYSQL_OPT_SSL_VERIFY_SERVER_CERT=0;MYSQL_OPT_RECONNECT=1",
   "Port": 3306
 }
