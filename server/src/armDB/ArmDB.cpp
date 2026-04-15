@@ -68,6 +68,8 @@ void ArmDB::tryInsertLogsToDB(const std::string &UID, const std::string &IP, con
     try {
         auto stmt = getStatement();
 
+        nanodbc::prepare(stmt, sql);
+
         stmt.bind(0, UID.c_str());
         stmt.bind(1, IP.c_str());
         stmt.bind(2, HostName.c_str());

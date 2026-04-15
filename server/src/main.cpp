@@ -9,8 +9,8 @@
 
 int main() {
 
-    std::string env = std::getenv("OMONIC_ARM_LOCATOR_CONNECTING_STRING");
-    if (env.empty()) {
+    auto env = std::getenv("OMONIC_ARM_LOCATOR_CONNECTING_STRING");
+    if (!env) {
         throw std::runtime_error("env OMONIC_ARM_LOCATOR_CONNECTING_STRING is empty");
     }
 
