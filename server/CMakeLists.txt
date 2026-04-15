@@ -11,10 +11,7 @@ set(BUILD_SHARED_LIBS OFF)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
 
-file(COPY configs DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-
-
-find_package(Qt6 REQUIRED COMPONENTS Sql)
+find_package(nanodbc REQUIRED COMPONENTS Sql)
 
 
 set(BUILD_CTL OFF)
@@ -30,5 +27,5 @@ add_executable(${PROJECT_NAME}
         src/armDB/ArmDB.cpp
         src/server/Server.cpp
 )
-target_link_libraries(${PROJECT_NAME} PRIVATE drogon Qt6::Sql)
+target_link_libraries(${PROJECT_NAME} PRIVATE drogon nanodbc)
 target_include_directories(${PROJECT_NAME} PRIVATE src)

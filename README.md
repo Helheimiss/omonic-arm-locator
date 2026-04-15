@@ -1,29 +1,41 @@
-# omonic-arm-locator
+# Omonic Arm Locator
 
 ## Configs
 
-### [server_config.json](https://drogonframework.github.io/drogon-docs/#/ENG/ENG-11-Configuration-File)
+### Server Configuration File
 
-### database.json
+Uses standard Drogon configuration format:  
+[config.json](https://drogonframework.github.io/drogon-docs/#/ENG/ENG-11-Configuration-File)
 
-```json
-{
-  "Type": "QMARIADB",
-  "HostName": "db.example.com",
-  "DatabaseName": "Logs",
-  "UserName": "user",
-  "Password": "password",
-  "ConnectOptions": "MYSQL_OPT_RECONNECT=1",
-  "Port": 3306
-}
+
+
+## Database Connection
+
+Omonic uses ODBC driver for database connection.
+
+### Connection String Example (MariaDB)
 ```
-```json
-{
-  "Connection String": "QMARIADB"
-}
+Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;
 ```
 
-# Task list
-- [x] QMARIADB
-- [ ] QSQLITE
-- [ ] Connection String
+### Setting Environment Variable
+
+Set the `OMONIC_ARM_LOCATOR_CONNECTING_STRING` environment variable:
+
+#### Linux (bash)
+
+```bash
+export OMONIC_ARM_LOCATOR_CONNECTING_STRING="Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;"
+```
+
+#### Windows (CMD)
+
+```cmd
+set "OMONIC_ARM_LOCATOR_CONNECTING_STRING=Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;"
+```
+
+#### Windows (PowerShell)
+
+```powershell
+$env:OMONIC_ARM_LOCATOR_CONNECTING_STRING = "Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;"
+```
