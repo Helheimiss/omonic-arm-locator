@@ -91,7 +91,6 @@ private:
         root["Domain"] = info.domain;
         root["Workgroup"] = info.workgroup;
 
-        // Компактный вывод JSON (без лишних пробелов)
         Json::StreamWriterBuilder builder;
         builder["indentation"] = "";
         return Json::writeString(builder, root);
