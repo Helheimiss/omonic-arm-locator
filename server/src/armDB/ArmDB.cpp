@@ -4,7 +4,6 @@
 
 #include "ArmDB.hpp"
 
-#include "drogon/drogon_callbacks.h"
 #include "drogon/HttpAppFramework.h"
 
 using namespace std::string_literals;
@@ -35,8 +34,8 @@ nanodbc::statement ArmDB::getStatement() {
 }
 
 void ArmDB::tryCreateTable() {
-    std::string sql = R"(
-        CREATE TABLE IF NOT EXISTS `omn_arm_locator_logs` (
+    std::string sql = std::format(R"(
+        CREATE TABLE IF NOT EXISTS `{}` (
           `UID` varchar(255) PRIMARY KEY,
           `DatePing` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
           `IP` text NOT NULL,
@@ -44,7 +43,7 @@ void ArmDB::tryCreateTable() {
           `SubDivision` text NOT NULL,
           `Domain` text NOT NULL,
           `WorkGroup` text NOT NULL
-        ))";
+        ))", table_name);
 
     try {
         execute(sql);
@@ -56,8 +55,8 @@ void ArmDB::tryCreateTable() {
 }
 
 void ArmDB::tryInsertLogsToDB(const std::string &UID, const std::string &IP, const std::string &HostName, const std::string &SubDivision, const std::string &Domain, const std::string &Workgroup) {
-    std::string sql = R"(
-    INSERT INTO `omn_arm_locator_logs` (UID, IP, HostName, Subdivision, Domain, Workgroup)
+    std::string sql = std::format(R"(
+    INSERT INTO `{}` (UID, IP, HostName, Subdivision, Domain, Workgroup)
     VALUES (?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
         IP = VALUES(IP),
@@ -66,7 +65,7 @@ void ArmDB::tryInsertLogsToDB(const std::string &UID, const std::string &IP, con
         Subdivision = VALUES(Subdivision),
         Domain = VALUES(Domain),
         Workgroup = VALUES(Workgroup);
-    )";
+    )", table_name);
 
     try {
         auto stmt = getStatement();

@@ -34,9 +34,9 @@ namespace server {
     }
 
     void checkHandler(const drogon::HttpRequestPtr &request, Callback &&callback) {
+        static auto rate_limit_ms = drogon::app().getCustomConfig().get("rate_limit_ms", 60000).asInt64();
 
-
-        callback(makeSimpleJsonResponse("error", "no errors"));
+        callback(makeSimpleJsonResponse("rate_limit_ms", rate_limit_ms));
     }
 
     void Filter::doFilter(const drogon::HttpRequestPtr &req, drogon::FilterCallback &&fcb, drogon::FilterChainCallback &&fccb) {
@@ -55,9 +55,9 @@ namespace server {
         requests[ip] = timenow + timeout;
     }
 
-    drogon::HttpResponsePtr makeSimpleJsonResponse(const std::string &label, const std::string &text, drogon::HttpStatusCode statusCode) {
+    drogon::HttpResponsePtr makeSimpleJsonResponse(const std::string &label, const auto &value, drogon::HttpStatusCode statusCode) {
         Json::Value json;
-        json[label] = text;
+        json[label] = value;
         auto resp = drogon::HttpResponse::newHttpJsonResponse(std::move(json));
         resp->setStatusCode(statusCode);
         return resp;

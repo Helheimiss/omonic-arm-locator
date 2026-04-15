@@ -15,7 +15,7 @@ Omonic uses ODBC driver for database connection.
 
 ### Connection String Example (MariaDB)
 ```
-Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;
+Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;AUTO_RECONNECT=1;
 ```
 
 ### Setting Environment Variable
@@ -25,17 +25,17 @@ Set the `OMONIC_ARM_LOCATOR_CONNECTING_STRING` environment variable:
 #### Linux (bash)
 
 ```bash
-export OMONIC_ARM_LOCATOR_CONNECTING_STRING="Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;"
+export OMONIC_ARM_LOCATOR_CONNECTING_STRING="Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;AUTO_RECONNECT=1;"
 ```
 
 #### Windows (CMD)
 
 ```cmd
-set "OMONIC_ARM_LOCATOR_CONNECTING_STRING=Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;"
+set "OMONIC_ARM_LOCATOR_CONNECTING_STRING=Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;AUTO_RECONNECT=1;"
 ```
 
 #### Windows (PowerShell)
 
 ```powershell
-$env:OMONIC_ARM_LOCATOR_CONNECTING_STRING = "Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;"
+$env:OMONIC_ARM_LOCATOR_CONNECTING_STRING = "Driver={MariaDB ODBC 3.2 Driver};Server=localhost;Port=3306;Database=yourDB;UID=yourUSERNAME;PWD=yourPASSWORD;AUTO_RECONNECT=1;"
 ```
