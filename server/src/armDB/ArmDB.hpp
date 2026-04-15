@@ -4,14 +4,14 @@
 
 #pragma once
 
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
+#include <nanodbc.h>
+#include <memory>
+#include <string>
 
 namespace armDB {
 class ArmDB {
 public:
-    ArmDB(const QString &type, const QString &HostName, const QString &DatabaseName, const QString &UserName, const QString &Password, const QString &connectOptions = QString(), int port = 3306);
+    ArmDB(std::string env);
     ~ArmDB();
 
     ArmDB(const ArmDB &other) = delete;
@@ -20,14 +20,15 @@ public:
     ArmDB(ArmDB &&other) = delete;
     ArmDB & operator=(ArmDB &&other) = delete;
 
-    QSqlQuery getQuery();
+    nanodbc::result execute(const std::string &sql);
+    static nanodbc::result execute(nanodbc::statement &stmt);
+    nanodbc::statement getStatement();
+
     void tryCreateTable();
-    void tryInsertLogsToDB(const QString &UID, const QString &IP, const QString &HostName, const QString &SubDivision, const QString &Domain, const QString &Workgroup);
+    void tryInsertLogsToDB(const std::string &UID, const std::string &IP, const std::string &HostName, const std::string &SubDivision, const std::string &Domain, const std::string &Workgroup);
 
 private:
-    QString type;
-    QSqlDatabase db;
-    QString user_name_;
+    nanodbc::connection db;
 };
 
 inline std::unique_ptr<ArmDB> DB;

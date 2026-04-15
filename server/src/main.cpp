@@ -7,15 +7,22 @@
 #include "drogon/HttpAppFramework.h"
 #include "server/Server.hpp"
 
-int main(int argc, char *argv[]) {
+int main() {
+
+    std::string env = std::getenv("OMONIC_ARM_LOCATOR_CONNECTING_STRING");
+    if (env.empty()) {
+        throw std::runtime_error("env OMONIC_ARM_LOCATOR_CONNECTING_STRING is empty");
+    }
+
+    armDB::DB = std::make_unique<armDB::ArmDB>(env);
     armDB::DB->tryCreateTable();
 
-
     drogon::app()
-        .loadConfigFile("./configs/server.json")
+        .loadConfigFile("./configs/drogon_config.json")
         .registerHandler("/server/ping", &server::pingIndexHandler, {drogon::Post})
         .registerHandler("/server/check", &server::checkHandler)
         .run();
+
 
     return 0;
 }

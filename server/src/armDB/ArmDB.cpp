@@ -7,38 +7,32 @@
 using namespace std::string_literals;
 
 namespace armDB {
-ArmDB::ArmDB(const QString &type, const QString &HostName, const QString &DatabaseName, const QString &UserName, const QString &Password, const QString &connectOptions, int port) : type(type) {
-    db = QSqlDatabase::addDatabase(type);
+ArmDB::ArmDB(std::string env) {
+    db.connect(env);
 
-    db.setHostName(HostName);
-    db.setDatabaseName(DatabaseName);
-
-    db.setConnectOptions(connectOptions);
-    db.setUserName(UserName);
-    db.setPassword(Password);
-    db.setPort(port);
-
-    if (!db.open()) {
-        throw std::runtime_error("Could not connect to database "s + db.lastError().text().toStdString());
-    }
-
+    if (!db.connected())
+        throw std::runtime_error("DB connection failed");
 }
 
 ArmDB::~ArmDB() {
-    db.close();
+    db.disconnect();
 }
 
-QSqlQuery ArmDB::getQuery() {
-    return QSqlQuery(db);
+
+nanodbc::result ArmDB::execute(const std::string &sql) {
+    return nanodbc::execute(db, sql);
+}
+
+nanodbc::result ArmDB::execute(nanodbc::statement &stmt) {
+    return nanodbc::execute(stmt);
+}
+
+nanodbc::statement ArmDB::getStatement() {
+    return nanodbc::statement(db);
 }
 
 void ArmDB::tryCreateTable() {
-    // TODO()
-    auto query = getQuery();
-    QString sql;
-
-    if (type == "QMARIADB") {
-        sql = R"(
+    std::string sql = R"(
         CREATE TABLE IF NOT EXISTS `omn_arm_locator_logs` (
           `UID` varchar(255) PRIMARY KEY,
           `DatePing` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -48,23 +42,18 @@ void ArmDB::tryCreateTable() {
           `Domain` text NOT NULL,
           `WorkGroup` text NOT NULL
         ))";
+
+    try {
+        execute(sql);
     }
-    else {
-        throw std::runtime_error("bad type DB");
+    catch (const std::exception& e) {
+        throw std::runtime_error("Database error: " + std::string(e.what()));
     }
 
-    if (!query.prepare(sql)) {
-        throw std::runtime_error("Prepare failed: " + query.lastError().text().toStdString());
-    }
-
-    if (!query.exec()) {
-        throw std::runtime_error("Exec failed: " + query.lastError().text().toStdString());
-    }
 }
 
-void ArmDB::tryInsertLogsToDB(const QString &UID, const QString &IP, const QString &HostName, const QString &SubDivision, const QString &Domain, const QString &Workgroup) {
-    // TODO()
-    QString sql = R"(
+void ArmDB::tryInsertLogsToDB(const std::string &UID, const std::string &IP, const std::string &HostName, const std::string &SubDivision, const std::string &Domain, const std::string &Workgroup) {
+    std::string sql = R"(
     INSERT INTO `omn_arm_locator_logs` (UID, IP, HostName, Subdivision, Domain, Workgroup)
     VALUES (?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
@@ -76,21 +65,20 @@ void ArmDB::tryInsertLogsToDB(const QString &UID, const QString &IP, const QStri
         Workgroup = VALUES(Workgroup);
     )";
 
-    auto query = getQuery();
+    try {
+        auto stmt = getStatement();
 
-    if (!query.prepare(sql)) {
-        throw std::runtime_error("Prepare failed: " + query.lastError().text().toStdString());
+        stmt.bind(0, UID.c_str());
+        stmt.bind(1, IP.c_str());
+        stmt.bind(2, HostName.c_str());
+        stmt.bind(3, SubDivision.c_str());
+        stmt.bind(4, Domain.c_str());
+        stmt.bind(5, Workgroup.c_str());
+
+        nanodbc::execute(stmt);
     }
-
-    query.bindValue(0, UID);
-    query.bindValue(1, IP);
-    query.bindValue(2, HostName);
-    query.bindValue(3, SubDivision);
-    query.bindValue(4, Domain);
-    query.bindValue(5, Workgroup);
-
-    if (!query.exec()) {
-        throw std::runtime_error("Exec failed: " + query.lastError().text().toStdString());
+    catch (const std::exception& e) {
+        throw std::runtime_error("Database error: " + std::string(e.what()));
     }
 }
 } // armDB
