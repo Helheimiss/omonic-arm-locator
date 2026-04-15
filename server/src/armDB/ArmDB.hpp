@@ -11,7 +11,7 @@
 namespace armDB {
 class ArmDB {
 public:
-    ArmDB(std::string env);
+    ArmDB(std::string env, std::string table_name);
     ~ArmDB();
 
     ArmDB(const ArmDB &other) = delete;
@@ -29,6 +29,7 @@ public:
 
 private:
     nanodbc::connection db;
+    std::string table_name;
 };
 
 inline std::unique_ptr<ArmDB> DB;

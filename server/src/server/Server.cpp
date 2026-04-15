@@ -4,7 +4,11 @@
 
 #include "Server.hpp"
 
+#include <sys/stat.h>
+
 #include "armDB/ArmDB.hpp"
+
+#include "drogon/HttpAppFramework.h"
 
 namespace server {
     void pingIndexHandler(const drogon::HttpRequestPtr &request, Callback &&callback) {
@@ -35,9 +39,27 @@ namespace server {
         callback(makeSimpleJsonResponse("error", "no errors"));
     }
 
+    void Filter::doFilter(const drogon::HttpRequestPtr &req, drogon::FilterCallback &&fcb, drogon::FilterChainCallback &&fccb) {
+        static auto timeout = std::chrono::milliseconds(drogon::app().getCustomConfig().get("rate_limit_ms", 0).asInt());
+        auto timenow = std::chrono::steady_clock::now();
+        std::string ip = req->getPeerAddr().toIp();
+
+
+        if (!requests.contains(ip) || requests[ip] < timenow) {
+            fccb();
+        }
+        else {
+            fcb(makeSimpleJsonResponse("error", "filter", drogon::HttpStatusCode::k429TooManyRequests));
+        }
+
+        requests[ip] = timenow + timeout;
+    }
+
     drogon::HttpResponsePtr makeSimpleJsonResponse(const std::string &label, const std::string &text, drogon::HttpStatusCode statusCode) {
         Json::Value json;
         json[label] = text;
-        return drogon::HttpResponse::newHttpJsonResponse(std::move(json));
+        auto resp = drogon::HttpResponse::newHttpJsonResponse(std::move(json));
+        resp->setStatusCode(statusCode);
+        return resp;
     }
 } // server

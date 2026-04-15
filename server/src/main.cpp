@@ -14,15 +14,19 @@ int main() {
         throw std::runtime_error("env OMONIC_ARM_LOCATOR_CONNECTING_STRING is empty");
     }
 
-    armDB::DB = std::make_unique<armDB::ArmDB>(env);
-    armDB::DB->tryCreateTable();
 
     drogon::app()
+        .enableServerHeader(false)
         .loadConfigFile("./configs/drogon_config.json")
-        .registerHandler("/server/ping", &server::pingIndexHandler, {drogon::Post})
-        .registerHandler("/server/check", &server::checkHandler)
-        .run();
+        .registerHandler("/server/ping", &server::pingIndexHandler, {drogon::Post, "server::Filter"})
+        .registerHandler("/server/check", &server::checkHandler, {drogon::Get, "server::Filter"});
 
 
+    armDB::DB = std::make_unique<armDB::ArmDB>(
+        env, drogon::app().getCustomConfig().get("table_name", "omn_arm_locator_logs").asString());
+    armDB::DB->tryCreateTable();
+
+
+    drogon::app().run();
     return 0;
 }

@@ -4,10 +4,13 @@
 
 #include "ArmDB.hpp"
 
+#include "drogon/drogon_callbacks.h"
+#include "drogon/HttpAppFramework.h"
+
 using namespace std::string_literals;
 
 namespace armDB {
-ArmDB::ArmDB(std::string env) {
+ArmDB::ArmDB(std::string env, std::string table_name) : table_name(std::move(table_name)) {
     db.connect(env);
 
     if (!db.connected())
