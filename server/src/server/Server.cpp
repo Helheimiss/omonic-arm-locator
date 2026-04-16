@@ -47,6 +47,8 @@ namespace server {
 
         if (!requests.contains(ip) || requests[ip] < timenow) {
             fccb();
+
+            requests[ip] = timenow + timeout;
         }
         else {
             Json::Value json;
@@ -58,8 +60,6 @@ namespace server {
 
             fcb(resp);
         }
-
-        requests[ip] = timenow + timeout;
     }
 
     drogon::HttpResponsePtr makeSimpleJsonResponse(const std::string &label, const auto value, drogon::HttpStatusCode statusCode) {
