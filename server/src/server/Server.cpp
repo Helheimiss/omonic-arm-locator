@@ -49,13 +49,20 @@ namespace server {
             fccb();
         }
         else {
-            fcb(makeSimpleJsonResponse("error", "filter", drogon::HttpStatusCode::k429TooManyRequests));
+            Json::Value json;
+            json["error"] = "timeout";
+            json["rate_limit_ms"] = std::chrono::duration_cast<std::chrono::milliseconds>(requests[ip] - timenow).count();
+
+            auto resp = drogon::HttpResponse::newHttpJsonResponse(std::move(json));
+            resp->setStatusCode(drogon::HttpStatusCode::k429TooManyRequests);
+
+            fcb(resp);
         }
 
         requests[ip] = timenow + timeout;
     }
 
-    drogon::HttpResponsePtr makeSimpleJsonResponse(const std::string &label, const auto &value, drogon::HttpStatusCode statusCode) {
+    drogon::HttpResponsePtr makeSimpleJsonResponse(const std::string &label, const auto value, drogon::HttpStatusCode statusCode) {
         Json::Value json;
         json[label] = value;
         auto resp = drogon::HttpResponse::newHttpJsonResponse(std::move(json));

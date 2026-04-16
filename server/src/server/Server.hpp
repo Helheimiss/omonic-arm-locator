@@ -25,5 +25,5 @@ private:
     std::unordered_map<std::string, std::chrono::time_point<std::chrono::steady_clock>> requests;
 };
 
-drogon::HttpResponsePtr makeSimpleJsonResponse(const std::string &label, const auto &text, drogon::HttpStatusCode statusCode = drogon::HttpStatusCode::k200OK);
+drogon::HttpResponsePtr makeSimpleJsonResponse(const std::string &label, const auto text, drogon::HttpStatusCode statusCode = drogon::HttpStatusCode::k200OK);
 } // server

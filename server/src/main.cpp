@@ -16,8 +16,9 @@ int main() {
 
 
     drogon::app()
-        .enableServerHeader(false)
         .loadConfigFile("./configs/drogon_config.json")
+        .enableServerHeader(false)
+        .setCustom404Page(server::makeSimpleJsonResponse("error", "404", drogon::k404NotFound))
         .registerHandler("/server/ping", &server::pingIndexHandler, {drogon::Post, "server::Filter"})
         .registerHandler("/server/check", &server::checkHandler, {drogon::Get, "server::Filter"});
 

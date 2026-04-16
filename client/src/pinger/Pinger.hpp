@@ -14,7 +14,6 @@ public:
         : host(host), subdivision(std::move(subdivision)) {
         client = std::make_unique<httplib::Client>(host);
 
-        // Таймауты лучше вынести в конфиг, но 5с — разумно
         client->set_connection_timeout(5, 0);
         client->set_read_timeout(5, 0);
     }
